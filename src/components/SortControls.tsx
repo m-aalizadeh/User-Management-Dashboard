@@ -26,8 +26,9 @@ export const SortControls = ({
     if (newDirection !== null) {
       onSortChange(newDirection);
 
-      searchParams.set("sort", newDirection);
-      setSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams);
+      params.set("sort", newDirection);
+      setSearchParams(params);
     }
   };
 
@@ -36,11 +37,15 @@ export const SortControls = ({
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: 2,
+        gap: 1,
       }}
     >
-      <Typography variant="body2" color="textSecondary">
-        Sort by Name:
+      <Typography
+        variant="body2"
+        color="textSecondary"
+        sx={{ whiteSpace: "nowrap" }}
+      >
+        Sort:
       </Typography>
       <ToggleButtonGroup
         value={sortDirection}
@@ -48,6 +53,21 @@ export const SortControls = ({
         onChange={handleSortChange}
         aria-label="sort direction"
         size="small"
+        sx={{
+          "& .MuiToggleButton-root": {
+            px: 1,
+            py: 0.5,
+            border: "1px solid",
+            borderColor: "divider",
+            "&.Mui-selected": {
+              backgroundColor: "primary.main",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "primary.dark",
+              },
+            },
+          },
+        }}
       >
         <ToggleButton value="asc" aria-label="ascending">
           <ArrowUpward fontSize="small" />

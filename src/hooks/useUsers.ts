@@ -5,9 +5,16 @@ import { fetchUsers } from "../services/api";
 interface UseUsersProps {
   searchQuery: string;
   sortDirection: SortDirection;
+  page: number;
+  itemsPerPage: number;
 }
 
-export const useUsers = ({ searchQuery, sortDirection }: UseUsersProps) => {
+export const useUsers = ({
+  searchQuery,
+  sortDirection,
+  page,
+  itemsPerPage,
+}: UseUsersProps) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +36,7 @@ export const useUsers = ({ searchQuery, sortDirection }: UseUsersProps) => {
     loadUsers();
   }, []);
 
-  const filteredAndSortedUsers = useMemo(() => {
+  const processedUsers = useMemo(() => {
     let result = [...users];
 
     if (searchQuery.trim()) {
@@ -49,10 +56,21 @@ export const useUsers = ({ searchQuery, sortDirection }: UseUsersProps) => {
     return result;
   }, [users, searchQuery, sortDirection]);
 
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const result = processedUsers.slice(startIndex, endIndex);
+    return result;
+  }, [processedUsers, page, itemsPerPage]);
+
+  const totalPages = Math.ceil(processedUsers.length / itemsPerPage);
+
   return {
-    users: filteredAndSortedUsers,
+    users: paginatedUsers,
+    allUsers: processedUsers,
     loading,
     error,
-    total: filteredAndSortedUsers.length,
+    total: processedUsers.length,
+    totalPages: totalPages,
   };
 };

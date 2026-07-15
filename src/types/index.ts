@@ -27,4 +27,6 @@ export type SortDirection = "asc" | "desc";
 export interface UserFilters {
   search: string;
   sort: SortDirection;
+  page: number;
+  itemsPerPage: number;
 }
